@@ -266,42 +266,33 @@ public:
     // вставить элемент с ключем key и значением value
     void insert(const Key& key, const Value& value) {
         if (_root == nullptr) {
-            _root = new Node(key, value);
-            _leftNode = _root;
-            _rightNode = _root;
+            _root = _leftNode = _rightNode = new Node(key, value);
             _size++;
-            return;
         }
-        bool isLeftNode = true;
-        bool isRightNode = true;
-        Node* node = _root;
+        Node *newNode;
+        Node *node = _root;
         while (1) {
             if (key <= node->key()) {
-                isRightNode = false;
                 if (node->left == nullptr) {
-                    node->left = new Node(key, value, node);
-                    if (isLeftNode) {
-                        _leftNode = node->left;
-                    }
+                    node->left = newNode = new Node(key, value, node);
                     break;
-                }
-                else {
+                } else {
                     node = node->left;
                 }
-            }
-            else {
-                isLeftNode = false;
+            } else {
                 if (node->right == nullptr) {
-                    node->right = new Node(key, value, node);
-                    if (isRightNode) {
-                        _rightNode = node->right;
-                    }
+                    node->right = newNode = new Node(key, value, node);
                     break;
-                }
-                else {
+                } else {
                     node = node->right;
                 }
             }
+        }
+        if (newNode->parent == _leftNode && newNode->parent->left == newNode) {
+            _leftNode = newNode;
+        }
+        else if (newNode->parent == _rightNode && newNode->parent->right == newNode) {
+            _rightNode = newNode;
         }
         _size++;
     }
