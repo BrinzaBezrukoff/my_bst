@@ -221,7 +221,7 @@ public:
         }
 
         Iterator operator++(int) {
-            ConstIterator temp (*this);
+            Iterator temp (*this);
             ++*this;
             return temp;
         }
@@ -427,6 +427,35 @@ public:
 
     size_t size() const {
         return _size;
+    }
+
+    friend std::ostream& operator<<(std::ostream& stream, const BinarySearchTree& bst) {
+        std::deque<Node*> queue;
+        Node* node;
+        queue.push_back(bst._root);
+        size_t rowCount = 1;
+        bool running = true;
+        while (running) {
+            running = false;
+            for (size_t i = 0; i < rowCount; i++) {
+                node = queue.front();
+                queue.pop_front();
+                if (node != nullptr) {
+                    running = true;
+                    stream << node->key() << ":" << node->value() << " ";
+                    queue.push_back(node->left);
+                    queue.push_back(node->right);
+                }
+                else {
+                    queue.push_back(nullptr);
+                    queue.push_back(nullptr);
+                    stream << "NULL ";
+                }
+            }
+            stream << std::endl;
+            rowCount *= 2;
+        }
+        return stream;
     }
 
 private:

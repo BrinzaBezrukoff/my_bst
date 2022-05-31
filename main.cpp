@@ -4,34 +4,20 @@
 
 int main() {
 
-    BinarySearchTree<int, int> bst;
+    BinarySearchTree<int, std::string> bst;
 
-    bst.insert(10, 2);
-    bst.insert(5, 9);
-    bst.insert(4, 1);
-    bst.insert(7, 8);
-    bst.insert(17, 4);
-    bst.insert(31, 0);
-    bst.insert(6, 5);
-    bst.insert(8, 3);
+    bst.insert(20, "kek");
+    bst.insert(20, "lol");
+    bst.insert(20, "abc");
+    bst.insert(10, "efg");
+    bst.insert(20, "xyz");
 
-    for (auto&& el: bst) {
-        std::cout << el.first << " : " << el.second << std::endl;
+    std::cout << bst;
+
+    auto [start, stop] = bst.equalRange(20);
+    for (; start != stop; ++start) {
+        std::cout << start->first << " " << start->second << ", ";
     }
-    std::cout << std::endl;
-
-    BinarySearchTree<int, int> newbst (std::move(bst));
-    newbst.erase(5);
-
-//    for (auto&& el: bst) {
-//        std::cout << el.first << " : " << el.second << std::endl;
-//    }
-//    std::cout << std::endl;
-
-    for (auto&& el: newbst) {
-        std::cout << el.first << " : " << el.second << std::endl;
-    }
-    std::cout << std::endl;
 
     return 0;
 }
