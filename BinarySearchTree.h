@@ -346,18 +346,34 @@ public:
     // [pair.first, pair.second) - полуинтервал, содержащий все элементы с ключем key
     std::pair<Iterator, Iterator> equalRange(const Key& key) {
         Iterator first = find(key);
+        if (first == end()) {
+            return std::make_pair(first, first);
+        }
         Iterator second (first);
-        while (second->first == key) {
-            ++second;
+        second++;
+        while (first != begin()) {
+            --first;
+            if (first->first != key) {
+                first++;
+                break;
+            }
         }
         return std::make_pair(first, second);
     }
 
     std::pair<ConstIterator, ConstIterator> equalRange(const Key& key) const {
         ConstIterator first = find(key);
+        if (first == cend()) {
+            return std::make_pair(first, first);
+        }
         ConstIterator second (first);
-        while (second->first == key) {
-            ++second;
+        second++;
+        while (first != cbegin()) {
+            --first;
+            if (first->first != key) {
+                first++;
+                break;
+            }
         }
         return std::make_pair(first, second);
     }
