@@ -46,7 +46,7 @@ public:
     BinarySearchTree() = default;
 
     //! Копирование
-    explicit BinarySearchTree(const BinarySearchTree& other) {
+    BinarySearchTree(const BinarySearchTree& other) {
         std::deque<std::pair<Node*, Node*>> queue;
         _root = new Node(other._root->key(), other._root->value());
         queue.push_back(std::make_pair(other._root, _root));
@@ -77,7 +77,7 @@ public:
     }
 
     //! Перемещение
-    explicit BinarySearchTree(BinarySearchTree&& other) noexcept {
+    BinarySearchTree(BinarySearchTree&& other) noexcept {
         swap(*this, other);
     }
 
@@ -323,8 +323,15 @@ public:
         while (!queue.empty()) {
             node = queue.front();
             queue.pop_front();
-            queue.push_back(node->left);
-            queue.push_back(node->right);
+            if (node == nullptr) {
+                continue;
+            }
+            if (node->left != nullptr) {
+                queue.push_back(node->left);
+            }
+            if (node->right != nullptr) {
+                queue.push_back(node->right);
+            }
             delete node;
         }
         _root = _leftNode = _rightNode = nullptr;

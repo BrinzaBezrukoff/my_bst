@@ -33,7 +33,5 @@ int main() {
     }
     std::cout << std::endl;
 
-    // TODO: here happens SIGSEGV
-
     return 0;
 }
