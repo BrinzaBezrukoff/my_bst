@@ -477,17 +477,20 @@ private:
 
     void eraseNode(Node* node) {
         if (node->left == nullptr && node->right == nullptr) {  // no child nodes
-            if (node->parent->left == node) {
+            if (node == _root) {
+                _root = _leftNode = _rightNode = nullptr;
+            }
+            else if (node->parent->left == node) {
+                if (node == _leftNode) {
+                    _leftNode = node->parent;
+                }
                 node->parent->left = nullptr;
             }
             else {
+                if (node == _rightNode) {
+                    _rightNode = node->parent;
+                }
                 node->parent->right = nullptr;
-            }
-            if (node == _leftNode) {
-                _leftNode = node->parent;
-            }
-            if (node == _rightNode) {
-                _rightNode = node->parent;
             }
             delete node;
         }
@@ -533,6 +536,7 @@ private:
                 delete left;
             }
         }
+        _size--;
     }
 };
 
