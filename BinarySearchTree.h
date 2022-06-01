@@ -4,7 +4,6 @@
 #include <utility>
 #include <cstddef>
 #include <deque>
-#include <stack>
 
 /*!
     Имплементация бинарного дерева поиска
