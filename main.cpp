@@ -9,15 +9,16 @@ int main() {
     bst.insert(20, "kek");
     bst.insert(20, "lol");
     bst.insert(20, "abc");
+    bst.insert(30, "aaa");
     bst.insert(10, "efg");
     bst.insert(20, "xyz");
 
     std::cout << bst;
 
-    auto [start, stop] = bst.equalRange(20);
-    for (; start != stop; ++start) {
-        std::cout << start->first << " " << start->second << ", ";
-    }
+    std::cout << "Erasing by key=20" << std::endl;
+    bst.erase(20);
+
+    std::cout << bst;
 
     return 0;
 }

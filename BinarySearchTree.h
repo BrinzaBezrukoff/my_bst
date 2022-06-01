@@ -268,6 +268,7 @@ public:
         if (_root == nullptr) {
             _root = _leftNode = _rightNode = new Node(key, value);
             _size++;
+            return;
         }
         Node *newNode;
         Node *node = _root;
@@ -299,11 +300,10 @@ public:
 
     // удалить все элементы с ключем key
     void erase(const Key& key) {
-        Node* node = findNode(key);
-        if (!node) {
-            return;
+        Node *node;
+        while ((node = findNode(key)) != nullptr) {
+            eraseNode(node);
         }
-        eraseNode(node);
     }
 
     // очистить дерево
@@ -486,18 +486,27 @@ private:
             delete node;
         }
         else if (node->left == nullptr || node->right == nullptr) {  // one child node
-            Node* existing = (node->left != nullptr) ? node->left : node->right;
-            node->keyValuePair = existing->keyValuePair;
-            node->left = existing->left;
-            node->right = existing->right;
-            delete existing;
+            Node* child = (node->left != nullptr) ? node->left : node->right;
+            node->keyValuePair = child->keyValuePair;
+            node->left = child->left;
+            node->right = child->right;
+            if (child->right != nullptr) {
+                child->right->parent = node;
+            }
+            if (child->left != nullptr) {
+                child->left->parent = node;
+            }
+            delete child;
         }
         else {  // two child nodes
             if (node->right->left == nullptr) {  // right node can simply replace erased node
                 node->keyValuePair = node->right->keyValuePair;
-                Node* temp = node->right->right;
+                Node* newRight = node->right->right;
                 delete node->right;
-                node->right = temp;
+                node->right = newRight;
+                if (newRight != nullptr) {
+                    newRight->parent = node;
+                }
             }
             else {  // erased node can be replaced by the most left node in right subtree
                 Node* left = node->right->left;
