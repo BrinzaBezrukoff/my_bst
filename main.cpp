@@ -1,24 +1,22 @@
 #include <iostream>
 #include "BinarySearchTree.h"
 
-
 int main() {
 
-    BinarySearchTree<int, std::string> bst;
+    Map<char, unsigned int> dict;
+    Set<char> set;
+    std::string input ("Hello my dear friend");
 
-    bst.insert(20, "kek");
-    bst.insert(20, "lol");
-    bst.insert(20, "abc");
-    bst.insert(30, "aaa");
-    bst.insert(10, "efg");
-    bst.insert(20, "xyz");
+    for (auto chr: input) {
+        dict[chr]++;
+        set.insert(chr);
+    }
 
-    std::cout << bst;
+    for (auto it: dict) {
+        std::cout << "'" << it.first << "'" << " : " << it.second << std::endl;
+    }
 
-    std::cout << "Erasing by key=20" << std::endl;
-    bst.erase(20);
-
-    std::cout << bst;
+    std::cout << set.contains('r') << std::endl;
 
     return 0;
 }

@@ -540,88 +540,152 @@ private:
     }
 };
 
-//
-///*!
-//    Имплементация словаря
-//    Не допускается дублирование ключей (аналог std::map)
-//*/
-//template <typename Key, typename Value>
-//class Map
-//{
-//    BinarySearchTree<Key, Value> _tree;
-//public:
-//    using MapIterator = typename BinarySearchTree<Key, Value>::Iterator;
-//    using ConstMapIterator = typename BinarySearchTree<Key, Value>::ConstIterator;
-//
-//    Map() = default;
-//
-//    explicit Map(const Map& other);
-//    Map& operator=(const Map& other);
-//
-//    explicit Map(Map&& other) noexcept;
-//    Map& operator=(Map&& other) noexcept;
-//
-//    ~Map() = default;
-//
-//    // вставить элемент с ключем key и значением value
-//    // если узел с ключем key уже представлен, то заменить его значение на value
-//    void insert(const Key& key, const Value& value);
-//
-//    // удалить элемент с ключем key
-//    void erase(const Key& key);
-//
-//    // найти элемент, равный ключу key
-//    ConstMapIterator find(const Key& key) const;
-//    MapIterator find(const Key& key);
-//
-//    // доступ к элементу по ключу
-//    // если в момент обращения элемента не существует, создать его,
-//    // ключ равен key, value равно дефолтному значению для типа Value
-//    const Value& operator[](const Key& key) const;
-//    Value& operator[](const Key& key);
-//
-//    MapIterator begin();
-//    MapIterator end();
-//
-//    ConstMapIterator cbegin() const;
-//    ConstMapIterator cend() const;
-//
-//    size_t size() const;
-//};
-//
-//
-///*!
-//    Имплементация множества
-//    Не допускается дублирование ключей (аналог std::set)
-//*/
-//template <typename Value>
-//class Set
-//{
-//    Map<Value, Value> _map;
-//
-//public:
-//    using SetIterator = Map::MapIterator;
-//    using ConstSetIterator = Map::ConstMapIterator;
-//
-//    Set() = default;
-//
-//    explicit Set(const Set& other);
-//    Set& operator=(const Set& other);
-//
-//    explicit Set(Set&& other) noexcept;
-//    Set& operator=(Set&& other) noexcept;
-//
-//    ~Set() = default;
-//
-//    void insert(const Value& value);
-//
-//    void erase(const Value& value);
-//
-//    ConstSetIterator find(const Value& value) const;
-//    SetIterator find(const Value& key);
-//
-//    bool contains(const Value& value) const;
-//};
-//
+
+/*!
+    Имплементация словаря
+    Не допускается дублирование ключей (аналог std::map)
+*/
+template <typename Key, typename Value>
+class Map
+{
+    BinarySearchTree<Key, Value> _tree;
+public:
+    using MapIterator = typename BinarySearchTree<Key, Value>::Iterator;
+    using ConstMapIterator = typename BinarySearchTree<Key, Value>::ConstIterator;
+
+    Map() = default;
+
+    Map(const Map& other) = default;
+    Map& operator=(const Map& other) = default;
+    Map(Map&& other) noexcept = default;
+    Map& operator=(Map&& other) noexcept = default;
+    ~Map() = default;
+
+    // вставить элемент с ключем key и значением value
+    // если узел с ключем key уже представлен, то заменить его значение на value
+    void insert(const Key& key, const Value& value) {
+        auto it = _tree.find(key);
+        if (it == _tree.end()) {
+            _tree.insert(key, value);
+            it = _tree.find(key);
+        }
+        *it = std::make_pair(key, value);
+    }
+
+    // удалить элемент с ключем key
+    void erase(const Key& key) {
+        _tree.erase(key);
+    }
+
+    // найти элемент, равный ключу key
+    ConstMapIterator find(const Key& key) const {
+        return _tree.find(key);
+    }
+
+    MapIterator find(const Key& key) {
+        return _tree.find(key);
+    }
+
+    // доступ к элементу по ключу
+    // если в момент обращения элемента не существует, создать его,
+    // ключ равен key, value равно дефолтному значению для типа Value
+    const Value& operator[](const Key& key) const {
+        auto it = _tree.find(key);
+        if (it == _tree.cend()) {
+            _tree.insert(key, Value());
+        }
+        return _tree.find(key)->second;
+    }
+
+    Value& operator[](const Key& key) {
+        auto it = _tree.find(key);
+        if (it == _tree.end()) {
+            _tree.insert(key, Value());
+        }
+        return _tree.find(key)->second;
+    }
+
+    MapIterator begin() {
+        return _tree.begin();
+    }
+
+    MapIterator end() {
+        return _tree.end();
+    }
+
+    ConstMapIterator cbegin() const {
+        return _tree.cbegin();
+    }
+
+    ConstMapIterator cend() const {
+        return _tree.cend();
+    }
+
+    size_t size() const {
+        return _tree.size();
+    }
+};
+
+
+/*!
+    Имплементация множества
+    Не допускается дублирование ключей (аналог std::set)
+*/
+template <typename Value>
+class Set
+{
+    Map<Value, Value> _map;
+
+public:
+    using SetIterator = typename Map<Value, Value>::MapIterator;
+    using ConstSetIterator = typename Map<Value, Value>::ConstMapIterator;
+
+    Set() = default;
+
+    Set(const Set& other) = default;
+    Set& operator=(const Set& other) = default;
+
+    Set(Set&& other) noexcept = default;
+    Set& operator=(Set&& other) noexcept = default;
+
+    ~Set() = default;
+
+    void insert(const Value& value) {
+        _map.insert(value, value);
+    }
+
+    void erase(const Value& value) {
+        _map.erase(value);
+    }
+
+    ConstSetIterator find(const Value& value) const {
+        return _map.find(value);
+    }
+
+    SetIterator find(const Value& key) {
+        return _map.find(key);
+    }
+
+    SetIterator begin() {
+        return _map.begin();
+    }
+
+    SetIterator end() {
+        return _map.end();
+    }
+
+    ConstSetIterator cbegin() const {
+        return _map.cbegin();
+    }
+
+    ConstSetIterator cend() const {
+        return _map.cend();
+    }
+
+    bool contains(const Value& value) const {
+        return find(value) != cend();
+    }
+};
+
 
 #endif // MY_BST_BINARY_SEARCH_TREE_H
