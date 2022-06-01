@@ -483,6 +483,12 @@ private:
             else {
                 node->parent->right = nullptr;
             }
+            if (node == _leftNode) {
+                _leftNode = node->parent;
+            }
+            if (node == _rightNode) {
+                _rightNode = node->parent;
+            }
             delete node;
         }
         else if (node->left == nullptr || node->right == nullptr) {  // one child node
@@ -496,12 +502,21 @@ private:
             if (child->left != nullptr) {
                 child->left->parent = node;
             }
+            if (child == _leftNode) {
+                _leftNode = node;
+            }
+            if (child == _rightNode) {
+                _rightNode = node;
+            }
             delete child;
         }
         else {  // two child nodes
             if (node->right->left == nullptr) {  // right node can simply replace erased node
                 node->keyValuePair = node->right->keyValuePair;
                 Node* newRight = node->right->right;
+                if (node->right == _rightNode) {
+                    _rightNode = node;
+                }
                 delete node->right;
                 node->right = newRight;
                 if (newRight != nullptr) {
